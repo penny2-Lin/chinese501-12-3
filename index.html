@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>航海王：語詞大冒險挑戰</title>
+    <style>
+        :root { --primary-color: #e74c3c; --bg-color: #f4f4f9; }
+        body { margin: 0; padding: 0; height: 100dvh; display: flex; flex-direction: column; font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif; background: var(--bg-color); }
+        header { background: #333; color: white; text-align: center; padding: 10px; flex-shrink: 0; }
+        #main-container { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 20px; box-sizing: border-box; }
+        #word-bank { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; justify-content: center; flex-shrink: 0; }
+        .word-card { background: white; border: 2px solid #333; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 1.2rem; user-select: none; transition: 0.2s; }
+        .word-card:active { transform: scale(0.95); }
+        .word-card.used { opacity: 0.5; cursor: default; }
+        #story-box { flex: 1; overflow-y: auto; background: white; padding: 30px; border-radius: 10px; line-height: 2.5; font-size: 1.4rem; border: 1px solid #ddd; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .drop-zone { display: inline-block; vertical-align: baseline; min-width: 100px; height: 1.8rem; border-bottom: 2px solid red; padding-bottom: 2px; margin: 0 5px; text-align: center; cursor: pointer; font-weight: bold; color: blue; transition: 0.3s; }
+        .drop-zone.correct { color: green; border-bottom: 2px solid green; }
+        .drop-zone.wrong { color: red; border-bottom: 2px solid red; }
+        #check-btn { margin: 20px auto; padding: 15px 40px; font-size: 1.5rem; background: var(--primary-color); color: white; border: none; border-radius: 50px; cursor: pointer; flex-shrink: 0; font-weight: bold; box-shadow: 0 4px 0 #c0392b; }
+        #check-btn:active { transform: translateY(4px); box-shadow: none; }
+        #feedback { text-align: center; font-weight: bold; font-size: 1.2rem; margin-top: 10px; height: 2rem; }
+    </style>
+</head>
+<body>
+    <header><h1>🏴‍☠️ 航海王：語詞大冒險</h1></header>
+    <div id="main-container">
+        <div id="word-bank"></div>
+        <div id="story-box" id="story-content">
+            黃金梅利號正航行在<span class="drop-zone" data-ans="一望無際"></span>的大海中，草帽海賊團的成員們正享受著悠閒的午後。魯夫坐在特等席上，看著海平面與天空連成一線，心中嚮往著傳說中的秘境。娜美則拿著指針，神情嚴肅地觀察著海象。突然間，原本平靜的海面捲起巨大的上升海流，整艘船開始在洶湧的海水中<span class="drop-zone" data-ans="載浮載沉"></span>。眼看著船隻即將被巨大的漩渦吞噬，喬巴嚇得<span class="drop-zone" data-ans="驚恐萬分"></span>，大聲哭喊著救命。魯夫大聲鼓舞士氣，要大家抓穩船身。經歷了一場驚心動魄的搏鬥，他們終於隨著海流衝上雲端，成功從大海的魔掌中<span class="drop-zone" data-ans="死裡逃生"></span>。衝破雲層後，梅利號降落在一個神祕的空島。此時的梅利號因為撞擊而顯得<span class="drop-zone" data-ans="傷痕累累"></span>，騙人布趕緊拿出工具修補。眾人深入島嶼，發現這裡的住民過著<span class="drop-zone" data-ans="自給自足"></span>的生活，雖然沒有奢華的科技，卻能在這座雲上孤島<span class="drop-zone" data-ans="與世無爭"></span>地度過每一天。島上的風景<span class="drop-zone" data-ans="引人入勝"></span>，色彩斑斕的雲朵花與會唱歌的貝殼，讓原本疲累的大家感到身心舒暢。索隆找了一棵巨木躺下睡覺，在夢中也顯得<span class="drop-zone" data-ans="自得其樂"></span>。為了慶祝抵達空島，香吉士利用當地的特產雲貝，烹飪出一桌熱騰騰的<span class="drop-zone" data-ans="山珍海味"></span>。魯夫大口吃著肉，眾人開心地乾杯，迎接這段未知的雲上大冒險。
+        </div>
+        <div id="feedback"></div>
+        <button id="check-btn">檢查任務結果</button>
+    </div>
+
+    <script>
+        const words = ["一望無際", "載浮載沉", "驚恐萬分", "死裡逃生", "傷痕累累", "自給自足", "與世無爭", "引人入勝", "自得其樂", "山珍海味"];
+        let selectedWord = null;
+        const wordBank = document.getElementById('word-bank');
+        const zones = document.querySelectorAll('.drop-zone');
+        const feedback = document.getElementById('feedback');
+
+        words.sort(() => Math.random() - 0.5).forEach(word => {
+            const btn = document.createElement('div');
+            btn.className = 'word-card';
+            btn.innerText = word;
+            btn.onclick = () => { selectedWord = word; feedback.innerText = "已選取： " + word; };
+            wordBank.appendChild(btn);
+        });
+
+        zones.forEach(zone => {
+            zone.onclick = () => {
+                if (selectedWord) { zone.innerText = selectedWord; selectedWord = null; feedback.innerText = ""; }
+                else { zone.innerText = ""; }
+            };
+        });
+
+        document.getElementById('check-btn').onclick = () => {
+            let correctCount = 0;
+            zones.forEach(zone => {
+                if (zone.innerText === zone.dataset.ans) { zone.className = 'drop-zone correct'; correctCount++; }
+                else { zone.className = 'drop-zone wrong'; }
+            });
+            feedback.innerText = correctCount === words.length ? "太強了！你是未來的海賊王！" : "再檢查一下，夥伴們還在等你！";
+        };
+    </script>
+</body>
+</html>
